@@ -1,13 +1,17 @@
 package com.amitdev.andsechw1;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.media.AudioManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -36,13 +40,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (checkUsername() && checkPassword()) {
-                    Toast.makeText(getApplicationContext(), "Username and Password are VALID!", Toast.LENGTH_SHORT).show();
-                    if (cboxNotARobot.isChecked() && tookPhoto) {
+                    if (isConnected() && tookPhoto && approvedVolume() && isAirplaneModeOn()) {
                         movePage();
-                    } else
-                        Toast.makeText(getApplicationContext(), "Checkbox not checked or You didn't take a photo", Toast.LENGTH_SHORT).show();
-                } else
-                    Toast.makeText(getApplicationContext(), "Username or Password are NOT VALID!", Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
         });
 
@@ -55,9 +56,37 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private boolean approvedVolume() {
+        AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        int currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        int currentVolumePercentage = 100 * currentVolume / maxVolume;
+        if (currentVolumePercentage <= 50)
+            return true;
+        return false;
+    }
+
+
+    //return true if enabled
+    private boolean isAirplaneModeOn() {
+
+        return Settings.System.getInt(this.getContentResolver(),
+                Settings.Global.AIRPLANE_MODE_ON, 0) != 0;
+
+    }
+
+    private boolean isConnected() {
+        ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        if (mWifi.isConnected()) {
+            return true;
+        }
+        return false;
+    }
+
     private void movePage() {
         Intent i = new Intent(getApplicationContext(), DestinationActivity.class);
-        i.putExtra("BitmapImage",this.imageBitmap);
+        i.putExtra("BitmapImage", this.imageBitmap);
         startActivity(i);
     }
 
@@ -72,7 +101,6 @@ public class MainActivity extends AppCompatActivity {
     private void findViews() {
         btnNext = findViewById(R.id.btnNext);
         btnCamera = findViewById(R.id.btnCamera);
-        cboxNotARobot = findViewById(R.id.cboxNotARobot);
         username = findViewById(R.id.edtUsername);
         password = findViewById(R.id.edtPassword);
     }

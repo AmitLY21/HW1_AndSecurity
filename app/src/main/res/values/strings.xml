@@ -4,7 +4,7 @@
     <string name="username">Username</string>
     <string name="password">Password</string>
     <string name="next">Next</string>
-    <string name="Requirements">Username: Minimum eight characters, at least one letter and one number \n\nPassword: Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special.\n\nTake a photo. \n\nCheck that you\'re not a Robot.</string>
+    <string name="Requirements">Username: Minimum eight characters, at least one letter and one number \n\nPassword: Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special.\n\nTake a photo. \n\nConnected To WIFI \n\nVolume is 50% or less \n\nEnabled Airplane Mode</string>
     <string name="camera">Camera</string>
     <string name="captcha">I\'m Not A Robot</string>
     <string name="passed">You Passed the Security!</string>
